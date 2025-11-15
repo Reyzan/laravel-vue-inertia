@@ -1,39 +1,54 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { Form, Head } from '@inertiajs/vue3';
+import { store } from '@/routes/login';
 
 import Input from '@/components/ui/input/Input.vue';
+import InputError from '@/components/InputError.vue';
+import Label from '@/components/ui/label/Label.vue';
 import Button from '@/components/ui/button/Button.vue';
 import TextLink from '@/components/ui/text-link/TextLink.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
-
-const email = ref('');
-const password = ref('');
 </script>
 
 <template>
+    <Head title="Sign in" />
+
     <AuthLayout title="Sign in to your account">
-        <form class="space-y-4 md:space-y-6" action="#">
-            <Input v-model="email" label="Your email" type="email" id="email" placeholder="name@company.com"
-                :required="true" />
-            <Input v-model="password" label="Password" type="password" id="password" placeholder="••••••••"
-                :required="true" />
-            <div class="flex items-center justify-between">
-                <div class="flex items-start">
-                    <div class="flex items-center h-5">
-                        <input id="remember" aria-describedby="remember" type="checkbox"
-                            class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                            required>
-                    </div>
-                    <div class="ml-3 text-sm">
-                        <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
-                    </div>
-                </div>
-                <TextLink href="#">Forgot password?</TextLink>
+        <Form
+            v-bind="store.form()"
+            :reset-on-success="['password']"
+            class="space-y-4 md:space-y-6"
+            #default="{ errors, processing }"
+        >
+            <div>
+                <Label for="email" :error="!!errors.email">Your email</Label>
+                <Input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="name@company.com"
+                    :error="!!errors.email"
+                    required
+                />
+                <InputError :message="errors.email" />
             </div>
-            <Button type="submit" full-width>Sign in</Button>
-            <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don't have an account yet? <TextLink href="#">Sign up</TextLink>
-            </p>
-        </form>
+
+            <div>
+                <Label for="password" :error="!!errors.password">Password</Label>
+                <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    :error="!!errors.password"
+                    required
+                />
+                <InputError :message="errors.password" />
+            </div>
+
+            <Button type="submit" full-width :disabled="processing">
+                {{ processing ? 'Signing in...' : 'Sign in' }}
+            </Button>
+        </Form>
     </AuthLayout>
 </template>
