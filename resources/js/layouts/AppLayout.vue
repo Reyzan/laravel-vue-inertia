@@ -1,7 +1,14 @@
 <script lang="ts" setup>
+import { onMounted, onUpdated } from 'vue';
+import { initFlowbite } from 'flowbite';
 import AppShell from '@/components/AppShell.vue';
 import Navbar from '@/components/Navbar.vue';
 import Sidebar from '@/components/Sidebar.vue';
+
+const wireFlowbite = () => initFlowbite();
+
+onMounted(wireFlowbite);
+onUpdated(wireFlowbite);
 </script>
 
 <template>
